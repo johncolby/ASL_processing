@@ -288,7 +288,7 @@ class Pipeline:
 		# SAVE CONFIG FILE TO STORE OUT FILES INFO 
 		self.config.save()
 
-if __name__ == "__main__":
+def cli():
 	parser = get_parser()
 	command_line_args = parser.parse_args()
 	#
