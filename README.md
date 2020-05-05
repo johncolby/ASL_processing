@@ -32,24 +32,57 @@ Processing steps:
  - If the total brain CBF value is available (from a phase contrast scan for example), option to correct the labelling efficiency when computing the CBF map from ASL data.
  - If the sequence used for teh ASL outputs a CBF map already processed, option to input directly the CBF map for subsequent CVR computation and ROI values extraction. 
 
+## Installation
+
+### Install prerequisites
+
+1. [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation)
+1. [`dcm2niix`](https://github.com/rordenlab/dcm2niix#Install)
+1. `python2.7`: For example, if using the Anaconda distribution, you can set up and activate a new virtual environment like:
+
+    ```
+    conda create --name asl python=2.7
+    conda activate asl
+    ``` 
+
+### Install `ASL_processing` package
+
+Copy the repository URL `repo_url` from github. E.g.
+
+![image](https://user-images.githubusercontent.com/473295/81104935-154a0f80-8ec8-11ea-953c-677f0e5ecacc.png)
+
+Then install the `ASL_processing` package like:
+
+```
+pip install git+<repo_url>
+```
+
+### Docker
+
+Instead of installing within your local environment, you can run the processing within a docker container based off the standard [`johncolby/asl`](https://hub.docker.com/r/johncolby/asl) image.
+
+A small wrapper script is included at: [`process_data_docker`](bin/process_data_docker)
+
+This wrapper is installed along with the python package. However, it also can be downloaded separately like: 
+```
+curl -O https://raw.githubusercontent.com/johncolby/ASL_processing/master/bin/process_data_docker
+chmod +x process_data_docker
+```
+
 ## Usage
-The streamlined processing is scripted in `process_data.py` and all the parameters need to be set in a JSON config file using the format of input as shown in `config_default.json`.
+
+```
+process_data --config my_config_file.json
+```
+
+or 
+
+```
+process_data_docker --config my_config_file.json
+```
+
+The streamlined processing is scripted in `process_data` and all the parameters need to be set in a JSON config file using the format of input as shown in `config_default.json`.
 
 To call this script, copy and past the file `config_default.json` to your working directory, and **modify the input parameters to point to your data**. You can also **choose which processing to apply** and change the **processing parameters** and **acquisition parameters**. 
 
-Then, run: 
-```
-python /absolute/path/to/the/scripts/process_data.py --config my_config_file.json
-```
-
-Note that to work, all the scripts need to be in the same directory as the main script (`process_data.py`)
 At the end of the script, a new version of the config file is saved in the output folder, to have access to the file names of the images computed during the processing as well as other data (for ex. ETCO2) and easily store that information.
-
-## Installation of the necessary packages  
-the requirements to run these scripts are FSL (fsl.fmrib.ox.ac.uk/fsl/fslwiki/) and some python packages. To install them, run: 
-```
-cd /absolute/path/to/the/scripts/install
-chmod 775 install.sh
-./install.sh
-```
-
