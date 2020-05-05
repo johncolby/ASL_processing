@@ -6,7 +6,8 @@ RUN apt update && apt install -y \
     curl=7.64.0-4+deb10u1 \
     dcm2niix=1.0.20181125-1 \
     file=1:5.35-4+deb10u1 \
-    git=1:2.20.1-2+deb10u3
+    git=1:2.20.1-2+deb10u3 \
+    tk=8.6.9+1
 
 # Setup FSL
 ENV FSLDIR /usr/local/fsl
@@ -15,7 +16,10 @@ RUN python fslinstaller.py -d ${FSLDIR} -q
 ENV FSLOUTPUTTYPE NIFTI_GZ
 ENV PATH ${FSLDIR}/bin:${PATH}
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$FSLDIR
+ENV FSL_DIR $FSLDIR
 
 # Setup python
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+
+ENTRYPOINT ["process_data"]

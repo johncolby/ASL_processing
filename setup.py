@@ -16,5 +16,6 @@ setup(
         "seaborn",
         "xlwt"
     ],
-    entry_points={'console_scripts': ['process_data = ASL_processing.process_data:cli']}
+    entry_points={'console_scripts': ['process_data = ASL_processing.process_data:cli']},
+    scripts=['bin/process_data_docker']
 )
