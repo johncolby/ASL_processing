@@ -2,6 +2,7 @@ import os, commands
 import pandas as pd
 import numpy as np
 import xml.etree.ElementTree
+import pkg_resources
 from utils import *
 
 
@@ -232,11 +233,11 @@ class Registration:
 		self.path_atlas_im_brain = os.path.join(fsl_dir, 'data/standard/MNI152_T1_1mm_brain.nii.gz')
 		self.path_atlas_im_brain_mask = os.path.join(fsl_dir, 'data/standard/MNI152_T1_1mm_brain_mask.nii.gz')
 		#
-		self.path_atlas_cort = os.path.join(fsl_dir, 'data/atlases/HarvardOxford/HarvardOxford-cort-maxprob-thr0-1mm.nii.gz')
-		self.path_atlas_subcort = os.path.join(fsl_dir, 'data/atlases/HarvardOxford/HarvardOxford-sub-maxprob-thr0-1mm.nii.gz')
+		self.path_atlas_cort = pkg_resources.resource_filename(__name__, 'atlas/custom/HarvardOxford/HarvardOxford-cort-maxprob-thr0-1mm.nii.gz')
+		self.path_atlas_subcort = pkg_resources.resource_filename(__name__, 'atlas/custom/HarvardOxford/HarvardOxford-sub-maxprob-thr0-1mm.nii.gz')
 		#
-		self.path_atlas_info_cort = os.path.join(fsl_dir, 'data/atlases/HarvardOxford-Cortical.xml')
-		self.path_atlas_info_subcort = os.path.join(fsl_dir, 'data/atlases/HarvardOxford-Subcortical.xml')
+		self.path_atlas_info_cort = pkg_resources.resource_filename(__name__, 'atlas/custom/HarvardOxford-Cortical.xml')
+		self.path_atlas_info_subcort = pkg_resources.resource_filename(__name__, 'atlas/custom/HarvardOxford-Subcortical.xml')
 		#
 		self.fname_gm = fname_gm
 		self.fname_wm = fname_wm
