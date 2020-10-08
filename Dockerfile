@@ -19,7 +19,12 @@ ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$FSLDIR
 ENV FSL_DIR $FSLDIR
 
 # Setup python
-COPY requirements.txt .
+WORKDIR /app
+COPY requirements.txt ./
 RUN pip install -r requirements.txt
+
+# Install package
+COPY . .
+RUN pip install .
 
 ENTRYPOINT ["process_data"]
