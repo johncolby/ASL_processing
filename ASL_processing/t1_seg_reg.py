@@ -88,12 +88,27 @@ def register_image(fname_in, fname_dest, init_mat=None, init_nl_transfo=None, fn
 		status_lin, output_lin = commands.getstatusoutput(cmd)
 
 		if applyxfm:
+			# Reslice from T1 space to metric native space
 			fname_transfo_reslice = fname_im_out+'_reslice.mat'
 			list_param_cmd = ['flirt', '-in', fname_im_out, '-ref', fname_dest, '-omat', fname_transfo_reslice, '-out', fname_im_out, '-applyxfm', '-usesqform']
 			cmd = ' '.join(list_param_cmd)
 			commands.getstatusoutput(cmd)
 
+			# Concatenate transforms
 			list_param_cmd = ['convert_xfm', fname_transfo_lin, '-concat', fname_transfo_reslice, '-omat', fname_transfo_lin]
+			cmd = ' '.join(list_param_cmd)
+			commands.getstatusoutput(cmd)
+
+			# Register atlas mask into metric native space
+			name_mask_out = os.path.basename(fname_dest).split('.')[0]+'_mask'
+			list_param_cmd = ['flirt', '-in', fname_mask_in, '-ref', fname_dest, '-out', name_mask_out, '-init', fname_transfo_lin, '-applyxfm', '-interp nearestneighbour']
+			cmd = ' '.join(list_param_cmd)
+			commands.getstatusoutput(cmd)
+
+			# Apply mask to raw metric data
+			name_out = os.path.basename(fname_dest).split('.')[0]
+			name_in = name_out.replace('_brain', '')
+			list_param_cmd = ['fslmaths', name_in, '-mas', name_mask_out, name_out]
 			cmd = ' '.join(list_param_cmd)
 			commands.getstatusoutput(cmd)
 		#
