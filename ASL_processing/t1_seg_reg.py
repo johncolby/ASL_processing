@@ -65,7 +65,7 @@ def segment_gm_wm(fname_t1_brain, ofolder=None):
 		return None, None
 
 
-def register_image(fname_in, fname_dest, init_mat=None, init_nl_transfo=None, fname_mask_in=None, fname_mask_dest=None, linear_reg=True, non_linear_reg=True):
+def register_image(fname_in, fname_dest, init_mat=None, init_nl_transfo=None, fname_mask_in=None, fname_mask_dest=None, linear_reg=True, non_linear_reg=True, applyxfm=False):
 	#
 	name_in = fname_in.split('/')[-1].split('.')[0]
 	# fname_transfo = name_in+'_to_'+fname_dest_reorient.split('.')[0]+'_affine'
@@ -79,10 +79,23 @@ def register_image(fname_in, fname_dest, init_mat=None, init_nl_transfo=None, fn
 		if init_mat is not None:
 			list_param_cmd.append('-init')
 			list_param_cmd.append(init_mat)
+			if applyxfm:
+				list_param_cmd[4] = init_mat.replace('_transform.mat', '')
+				list_param_cmd.append('-applyxfm')
 		# 
 		cmd = ' '.join(list_param_cmd)
 		print cmd
-		status_lin, output_lin = commands.getstatusoutput(cmd) 
+		status_lin, output_lin = commands.getstatusoutput(cmd)
+
+		if applyxfm:
+			fname_transfo_reslice = fname_im_out+'_reslice.mat'
+			list_param_cmd = ['flirt', '-in', fname_im_out, '-ref', fname_dest, '-omat', fname_transfo_reslice, '-out', fname_im_out, '-applyxfm', '-usesqform']
+			cmd = ' '.join(list_param_cmd)
+			commands.getstatusoutput(cmd)
+
+			list_param_cmd = ['convert_xfm', fname_transfo_lin, '-concat', fname_transfo_reslice, '-omat', fname_transfo_lin]
+			cmd = ' '.join(list_param_cmd)
+			commands.getstatusoutput(cmd)
 		#
 		# fname_return = fname_transfo_lin if status == 0 else None
 		# print '-> done !'
@@ -263,7 +276,8 @@ class Registration:
 			self.fname_metric_mask = fname_metric_brain_mask
 			fname_metric = fname_metric_brain
 		# do registration
-		fname_mat_reg_metric_lin, fname_mat_reg_metric_nl = register_image(fname_in=self.path_atlas_im_brain, fname_dest=fname_metric, init_mat=fname_mat_reg_t1_lin, fname_mask_in=self.path_atlas_im_brain_mask, fname_mask_dest=self.fname_metric_mask, linear_reg=self.dict_param['registration']['linear'], non_linear_reg=self.dict_param['registration']['non-linear'])
+		applyxfm = self.dict_param['registration']['applyxfm'] if 'applyxfm' in self.dict_param['registration'] else False
+		fname_mat_reg_metric_lin, fname_mat_reg_metric_nl = register_image(fname_in=self.path_atlas_im_brain, fname_dest=fname_metric, init_mat=fname_mat_reg_t1_lin, fname_mask_in=self.path_atlas_im_brain_mask, fname_mask_dest=self.fname_metric_mask, linear_reg=self.dict_param['registration']['linear'], non_linear_reg=self.dict_param['registration']['non-linear'], applyxfm=applyxfm)
 		fname_mat_reg_metric = fname_mat_reg_metric_nl if fname_mat_reg_metric_nl is not None else fname_mat_reg_metric_lin
 		#
 		# register t1 to metric (for GM WM extraction)

@@ -65,6 +65,10 @@
 		"measures": ["mean", "median", "std", "min", "max"], // should be exact names of numpy functions 
 		// Registration: choose what type of registration to perform, Please keep at least one of the two options to 1: 
 		"registration":{
+			"applyxfm": 0, // Possibly useful for non-whole-brain ASL data. This
+						   // will apply the MNI-to-T1 transformation directly
+						   // to the ASL data instead of using it as a starting
+						   // point for further optimization.
 			"linear": 1,
 			"non-linear": 1
 		}
