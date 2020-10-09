@@ -297,4 +297,5 @@ def cli():
 	pipeline = Pipeline(command_line_args)
 	pipeline.process()
 
-
+if __name__ == "__main__":
+	cli()
